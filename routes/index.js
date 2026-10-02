@@ -10,6 +10,7 @@ const noticeRoutes = require("./noticeRoutes");
 const notificationRoutes = require("./notificationRoutes");
 const popupRoutes = require("./popupRoutes");
 const resultRoutes = require("./resultRoutes");
+const scholarshipRoutes = require("./scholarshipRoutes");
 const contactRoutes = require("./contactRoutes");
 const newsletterRoutes = require("./newsletterRoutes");
 const admissionFormRoutes = require("./admissionFormRoutes");
@@ -27,6 +28,7 @@ const registerRoutes = (app) => {
   app.use(`${api}/notification`, notificationRoutes);
   app.use(`${api}/popup-carousel`, popupRoutes);
   app.use(`${api}/result`, resultRoutes);
+  app.use(`${api}/scholarship`, scholarshipRoutes);
 
   // Public submissions (POST, and GET /form/:id for printing), everything else requires login
   app.use(`${api}/contact`, contactRoutes);

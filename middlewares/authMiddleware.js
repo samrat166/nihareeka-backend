@@ -65,6 +65,24 @@ const protect = () => {
   });
 };
 
+// For public routes that show more data to logged in users:
+// sets req.user when a valid token is sent, otherwise continues as a visitor
+const optionalAuth = () => {
+  return asyncHandler(async (req, res, next) => {
+    const authToken = getTokenFromRequest(req);
+
+    if (authToken) {
+      try {
+        req.user = await verifyTokenAndGetUser(authToken);
+      } catch (e) {
+        // Invalid or expired token: treat as a public visitor
+      }
+    }
+
+    next();
+  });
+};
+
 // Use after protect(): allows the request through only for the given roles
 const authorize = (...roles) => {
   return (req, res, next) => {
@@ -77,5 +95,6 @@ const authorize = (...roles) => {
 
 module.exports = {
   protect,
+  optionalAuth,
   authorize,
 };

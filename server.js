@@ -12,7 +12,11 @@ const registerRoutes = require("./routes");
 
 const { connectDB } = require("./config/db");
 const { seedSuperAdmin } = require("./scripts/seedSuperAdmin");
-const { errorHandler, notFound } = require("./middlewares/errorMiddleware");
+const {
+  errorHandler,
+  notFound,
+  HttpError,
+} = require("./middlewares/errorMiddleware");
 const { mongoSanitize } = require("./middlewares/sanitizeMiddleware");
 const { apiLimiter } = require("./middlewares/rateLimitMiddleware");
 
@@ -49,10 +53,13 @@ const isLocalDevOrigin = (origin) =>
   process.env.NODE_ENV !== "production" &&
   /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 
+const isAllowedOrigin = (origin) =>
+  allowedOrigins.includes(origin) || isLocalDevOrigin(origin);
+
 const corsOptions = {
   origin: (origin, callback) => {
     // Requests without an Origin header (Postman, curl, server-to-server) are allowed
-    if (!origin || allowedOrigins.includes(origin) || isLocalDevOrigin(origin)) {
+    if (!origin || isAllowedOrigin(origin)) {
       return callback(null, true);
     }
     console.warn(`CORS: blocked request from origin ${origin}`);
@@ -62,6 +69,19 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+// CSRF protection: the login cookie is sent cross-site (SameSite=None), so a request that
+// changes data is only accepted from an allowed origin. Browsers always send the Origin
+// header on cross-site POST/PUT/PATCH/DELETE; tools like Postman send none and are allowed.
+app.use((req, res, next) => {
+  const safeMethods = ["GET", "HEAD", "OPTIONS"];
+  const origin = req.headers.origin;
+  if (!safeMethods.includes(req.method) && origin && !isAllowedOrigin(origin)) {
+    console.warn(`CSRF: blocked ${req.method} ${req.originalUrl} from origin ${origin}`);
+    return next(new HttpError("Request origin not allowed", 403));
+  }
+  next();
+});
 app.use(apiLimiter);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: false, limit: "10mb" }));
