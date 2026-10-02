@@ -1,21 +1,26 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middlewares/authMiddleware");
+const { submissionLimiter } = require("../middlewares/rateLimitMiddleware");
 const {
   postForm,
   getForms,
   getSingleForm,
   updateFormStatus,
   deleteForm,
-} = require("../controllers/admissionForm");
+} = require("../controllers/admissionFormController");
 
-// Every admission form route requires login
-router.use(protect());
+// Public: students submit the form, then open the print page for it
+router.post("/", submissionLimiter, postForm);
 
-router.route("/").get(getForms).post(postForm);
+router.get("/", protect(), getForms);
 
-router.patch("/:id/status", updateFormStatus);
+// PUT /form/update/:id/accepted | rejected | pending
+router.put("/update/:id/:state", protect(), updateFormStatus);
 
-router.route("/:id").get(getSingleForm).delete(deleteForm);
+router.delete("/delete/:id", protect(), deleteForm);
+
+// Public: used by the print page after submitting
+router.get("/:id", getSingleForm);
 
 module.exports = router;

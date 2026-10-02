@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const Faculty = require("../models/facultyMember");
+const Faculty = require("../models/facultyMemberModel");
 const { cleanBody, ensureValidId, orNotFound } = require("../utils/helpers");
 
 module.exports.postFaculty = asyncHandler(async (req, res) => {

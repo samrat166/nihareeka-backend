@@ -15,7 +15,7 @@ const newsletterRoutes = require("./newsletterRoutes");
 const admissionFormRoutes = require("./admissionFormRoutes");
 
 const registerRoutes = (app) => {
-  const api = `/${routePrefix}api`;
+  const api = `/${routePrefix}api/v1`;
 
   app.use(`${api}/user`, userRoutes);
 
@@ -25,13 +25,13 @@ const registerRoutes = (app) => {
   app.use(`${api}/gallery`, galleryRoutes);
   app.use(`${api}/notice`, noticeRoutes);
   app.use(`${api}/notification`, notificationRoutes);
-  app.use(`${api}/popup`, popupRoutes);
+  app.use(`${api}/popup-carousel`, popupRoutes);
   app.use(`${api}/result`, resultRoutes);
 
-  // Fully protected
+  // Public submissions (POST, and GET /form/:id for printing), everything else requires login
   app.use(`${api}/contact`, contactRoutes);
   app.use(`${api}/newsletter`, newsletterRoutes);
-  app.use(`${api}/admission-form`, admissionFormRoutes);
+  app.use(`${api}/form`, admissionFormRoutes);
 
   return app;
 };

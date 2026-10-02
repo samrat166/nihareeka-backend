@@ -1,18 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middlewares/authMiddleware");
+const { submissionLimiter } = require("../middlewares/rateLimitMiddleware");
 const {
   postContact,
   getContact,
   getSingleContact,
   deleteContact,
-} = require("../controllers/contact");
+} = require("../controllers/contactController");
 
-// Every contact route requires login
-router.use(protect());
+// Public: website visitors send a message
+router.post("/", submissionLimiter, postContact);
 
-router.route("/").get(getContact).post(postContact);
+router.get("/", protect(), getContact);
 
-router.route("/:id").get(getSingleContact).delete(deleteContact);
+router
+  .route("/:id")
+  .get(protect(), getSingleContact)
+  .delete(protect(), deleteContact);
 
 module.exports = router;

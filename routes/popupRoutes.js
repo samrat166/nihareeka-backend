@@ -6,7 +6,7 @@ const {
   getPopup,
   updatePopup,
   deletePopup,
-} = require("../controllers/popup");
+} = require("../controllers/popupController");
 
 router.route("/").get(getPopup).post(protect(), postPopup);
 

@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const Popup = require("../models/popup");
+const Popup = require("../models/popupModel");
 const { cleanBody, ensureValidId, orNotFound } = require("../utils/helpers");
 
 module.exports.postPopup = asyncHandler(async (req, res) => {

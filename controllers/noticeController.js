@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const Notice = require("../models/notice");
+const Notice = require("../models/noticeModel");
 const { cleanBody, ensureValidId, orNotFound } = require("../utils/helpers");
 
 module.exports.postNotice = asyncHandler(async (req, res) => {

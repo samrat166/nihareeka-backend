@@ -1,9 +1,12 @@
 const asyncHandler = require("express-async-handler");
-const Contact = require("../models/contactUs");
+const Contact = require("../models/contactModel");
+const { setNotification } = require("./notificationController");
 const { cleanBody, ensureValidId, orNotFound } = require("../utils/helpers");
 
 module.exports.postContact = asyncHandler(async (req, res) => {
   const contact = await Contact.create(cleanBody(req.body));
+  // Turn on the "new message" badge in the dashboard
+  await setNotification(true);
   res.status(201).json({
     success: true,
     contact,

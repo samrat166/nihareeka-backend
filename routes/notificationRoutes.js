@@ -4,8 +4,10 @@ const { protect } = require("../middlewares/authMiddleware");
 const {
   getNotification,
   updateNotification,
-} = require("../controllers/notification");
+} = require("../controllers/notificationController");
 
-router.route("/").get(getNotification).put(protect(), updateNotification);
+router.get("/", getNotification);
+
+router.put("/:request", protect(), updateNotification);
 
 module.exports = router;

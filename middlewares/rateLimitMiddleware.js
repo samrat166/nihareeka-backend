@@ -9,6 +9,15 @@ const loginLimiter = rateLimit({
   message: { message: "Too many login attempts. Please try again later." },
 });
 
+// Public form submissions (contact, newsletter, admission form): 20 per IP every 15 minutes
+const submissionLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: { message: "Too many submissions. Please try again later." },
+});
+
 // General limit for the whole API
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -18,4 +27,4 @@ const apiLimiter = rateLimit({
   message: { message: "Too many requests. Please try again later." },
 });
 
-module.exports = { loginLimiter, apiLimiter };
+module.exports = { loginLimiter, submissionLimiter, apiLimiter };

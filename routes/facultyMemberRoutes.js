@@ -6,7 +6,7 @@ const {
   getFaculty,
   updateFaculty,
   deleteFaculty,
-} = require("../controllers/facultyMember");
+} = require("../controllers/facultyMemberController");
 
 router.route("/").get(getFaculty).post(protect(), postFaculty);
 

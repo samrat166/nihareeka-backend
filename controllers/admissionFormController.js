@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const AdmissionForm = require("../models/Form");
+const AdmissionForm = require("../models/admissionFormModel");
 const { HttpError } = require("../middlewares/errorMiddleware");
 const { cleanBody, ensureValidId, orNotFound } = require("../utils/helpers");
 
@@ -24,10 +24,10 @@ module.exports.getSingleForm = asyncHandler(async (req, res) => {
   );
 });
 
-// Body: { "acceptence": "pending" | "accepted" | "rejected" }
+// PUT /form/update/:id/:state  (state: "pending" | "accepted" | "rejected")
 module.exports.updateFormStatus = asyncHandler(async (req, res) => {
   ensureValidId(req.params.id);
-  const { acceptence } = req.body;
+  const acceptence = req.params.state;
   if (!ACCEPTANCE_STATUSES.includes(acceptence)) {
     throw new HttpError(
       `acceptence must be one of: ${ACCEPTANCE_STATUSES.join(", ")}`

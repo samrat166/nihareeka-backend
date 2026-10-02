@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const Gallery = require("../models/gallery");
+const Gallery = require("../models/galleryModel");
 const { cleanBody, ensureValidId, orNotFound } = require("../utils/helpers");
 
 module.exports.postGallery = asyncHandler(async (req, res) => {

@@ -6,7 +6,7 @@ const {
   getResult,
   updateResult,
   deleteResult,
-} = require("../controllers/result");
+} = require("../controllers/resultController");
 
 router.route("/").get(getResult).post(protect(), postResult);
 

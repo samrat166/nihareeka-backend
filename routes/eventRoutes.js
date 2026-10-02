@@ -7,7 +7,7 @@ const {
   getSingleEvent,
   updateEvents,
   deleteEvents,
-} = require("../controllers/events");
+} = require("../controllers/eventController");
 
 router.route("/").get(getEvents).post(protect(), postEvents);
 

@@ -7,7 +7,7 @@ const {
   getByFaculty,
   updateGallery,
   deleteGallery,
-} = require("../controllers/gallery");
+} = require("../controllers/galleryController");
 
 router.route("/").get(getGallery).post(protect(), postGallery);
 

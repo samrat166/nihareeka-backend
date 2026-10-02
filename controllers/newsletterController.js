@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const Newsletter = require("../models/newsletter");
+const Newsletter = require("../models/newsletterModel");
 const { ensureValidId, orNotFound } = require("../utils/helpers");
 
 // A duplicate email is turned into a 400 "already exists" error by errorMiddleware

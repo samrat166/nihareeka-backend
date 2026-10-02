@@ -37,8 +37,27 @@ app.use(helmet());
 app.use(cookieParser());
 
 // Set up CORS configuration
+// Allowed origins: BASEURL plus any extra comma-separated ones in CORS_ORIGINS.
+// Outside production, any http://localhost:<port> or http://127.0.0.1:<port> is also allowed.
+const allowedOrigins = [process.env.BASEURL, process.env.CORS_ORIGINS]
+  .filter(Boolean)
+  .flatMap((value) => value.split(","))
+  .map((origin) => origin.trim().replace(/\/+$/, ""))
+  .filter(Boolean);
+
+const isLocalDevOrigin = (origin) =>
+  process.env.NODE_ENV !== "production" &&
+  /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+
 const corsOptions = {
-  origin: process.env.BASEURL,
+  origin: (origin, callback) => {
+    // Requests without an Origin header (Postman, curl, server-to-server) are allowed
+    if (!origin || allowedOrigins.includes(origin) || isLocalDevOrigin(origin)) {
+      return callback(null, true);
+    }
+    console.warn(`CORS: blocked request from origin ${origin}`);
+    callback(null, false);
+  },
   credentials: true, // Allow cookies
 };
 

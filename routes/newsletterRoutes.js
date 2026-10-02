@@ -1,17 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middlewares/authMiddleware");
+const { submissionLimiter } = require("../middlewares/rateLimitMiddleware");
 const {
   postNewsletter,
   getNewsletter,
   deleteNewsletter,
-} = require("../controllers/newsletter");
+} = require("../controllers/newsletterController");
 
-// Every newsletter route requires login
-router.use(protect());
+// Public: website visitors subscribe
+router.post("/", submissionLimiter, postNewsletter);
 
-router.route("/").get(getNewsletter).post(postNewsletter);
+router.get("/", protect(), getNewsletter);
 
-router.delete("/:id", deleteNewsletter);
+router.delete("/:id", protect(), deleteNewsletter);
 
 module.exports = router;

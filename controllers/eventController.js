@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const Events = require("../models/events");
+const Events = require("../models/eventModel");
 const { cleanBody, ensureValidId, orNotFound } = require("../utils/helpers");
 
 module.exports.postEvents = asyncHandler(async (req, res) => {
