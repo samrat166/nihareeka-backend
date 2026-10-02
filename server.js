@@ -42,7 +42,7 @@ app.use(cookieParser());
 
 // Set up CORS configuration
 // Allowed origins: BASEURL plus any extra comma-separated ones in CORS_ORIGINS.
-// Outside production, any http://localhost:<port> or http://127.0.0.1:<port> is also allowed.
+// In development (NODE_ENV=development), any http://localhost:<port> or http://127.0.0.1:<port> is also allowed.
 const allowedOrigins = [process.env.BASEURL, process.env.CORS_ORIGINS]
   .filter(Boolean)
   .flatMap((value) => value.split(","))
@@ -50,7 +50,7 @@ const allowedOrigins = [process.env.BASEURL, process.env.CORS_ORIGINS]
   .filter(Boolean);
 
 const isLocalDevOrigin = (origin) =>
-  process.env.NODE_ENV !== "production" &&
+  process.env.NODE_ENV === "development" &&
   /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 
 const isAllowedOrigin = (origin) =>

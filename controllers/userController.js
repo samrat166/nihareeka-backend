@@ -11,27 +11,27 @@ const {
 
 const {
   AUTH_COOKIE_NAME,
-  AUTH_COOKIE_OPTIONS,
+  getAuthCookieOptions,
   JWT_EXPIRES_IN_MS,
 } = require("../config/general");
 
 const { sanitize } = require("../utils/responseSanitizer");
 
-const setAuthCookie = (res, token) =>
+const setAuthCookie = (req, res, token) =>
   res.cookie(AUTH_COOKIE_NAME, token, {
-    ...AUTH_COOKIE_OPTIONS,
+    ...getAuthCookieOptions(req),
     maxAge: JWT_EXPIRES_IN_MS,
   });
 
 const login = asyncHandler(async (req, res) => {
   const loggedInUser = await loginService(req.body);
-  setAuthCookie(res, loggedInUser.token)
+  setAuthCookie(req, res, loggedInUser.token)
     .status(200)
     .json(sanitize(loggedInUser, "User", "All"));
 });
 
 const logout = asyncHandler(async (req, res) => {
-  res.clearCookie(AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS);
+  res.clearCookie(AUTH_COOKIE_NAME, getAuthCookieOptions(req));
 
   res.status(200).json({
     success: true,
@@ -49,7 +49,7 @@ const changePassword = asyncHandler(async (req, res) => {
     oldPassword: req.body.oldPassword,
     newPassword: req.body.newPassword,
   });
-  setAuthCookie(res, updatedUser.token)
+  setAuthCookie(req, res, updatedUser.token)
     .status(200)
     .json(sanitize(updatedUser, "User", "All"));
 });

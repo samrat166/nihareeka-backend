@@ -23,7 +23,7 @@ const errorHandler = (err, req, res, next) => {
   } else if (err.type === "entity.parse.failed") {
     statusCode = 400;
     message = "Invalid JSON in request body";
-  } else if (statusCode >= 500 && process.env.NODE_ENV === "production") {
+  } else if (statusCode >= 500 && process.env.NODE_ENV !== "development") {
     // Don't leak internal error details to clients in production
     message = "Something went wrong";
   }
@@ -35,7 +35,8 @@ const errorHandler = (err, req, res, next) => {
   res.status(statusCode);
   res.json({
     message: message || err.message,
-    stack: process.env.NODE_ENV == "production" ? null : err.stack,
+    // Stack traces only in local development, never on a deployed server
+    stack: process.env.NODE_ENV === "development" ? err.stack : null,
   });
 };
 
